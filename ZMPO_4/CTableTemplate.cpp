@@ -2,33 +2,36 @@
 #include "stdafx.h"
 #include "stdlib.h"
 #include "CTableTemplate.h"
-
-CTable::CTable()
+/*
+template <typename Data>
+CTable<Data>::CTable()
 {
 	s_name = "Without params";
 	tab = new int[i_tabSize];
 	for (int i = 0; i < i_tabSize; i++)
 	{
-		tab[i] = -1;
+		tab[i] = NULL;
 	}
 	cout << "bezp: " << s_name << endl;
 
 }
-CTable::CTable(int size, string sName)
+template <typename Data>
+CTable<Data>::CTable(int size, string sName)
 {
 	s_name = sName;
-	tab = new int[size];
+	tab = new Data[size];
 	for (int i = 0; i < size; i++)
 	{
-		tab[i] = -1;
+		tab[i] = NULL;
 	}
 	cout << "parametr: " << s_name << endl;
-
+	//przy przekopiowywaniu maj¹ byc ustawione -jedynki
 }
-CTable::CTable(CTable &pcOther)
+template <typename Data>
+CTable<Data>::CTable::CTable(CTable &pcOther)
 {
 	s_name = pcOther.s_name + "_copy";
-	tab = new int[pcOther.i_tabSize];
+	tab = new Data[pcOther.i_tabSize];
 	for (int i = 0; i < pcOther.i_tabSize; i++)
 	{
 		tab[i] = pcOther.tab[i];
@@ -37,30 +40,39 @@ CTable::CTable(CTable &pcOther)
 	cout << "kopiuj: " << s_name << endl;
 
 }
-CTable::~CTable()
+template <typename Data>
+CTable<Data>::CTable::~CTable()
 {
 	delete[] tab;
 	cout << "usuwam: " << s_name << endl;
 }
-void CTable::vSetName(string sName)
+template <typename Data>
+void CTable<Data>::vSetName(string sName)
 {
 	s_name = sName;
 }
-
-string CTable::sSetTabSize(int iSize)
+template <typename Data>
+string CTable<Data>::sSetTabSize(int iSize)
 {
 	if (iSize <= 0)
 		return "error";
 	else
 	{
-		int *temp_tab = new int[iSize];
+		int *temp_tab = new Data[iSize];
 
 		for (int i = 0; i < i_tabSize; i++)
 		{
 
 			temp_tab[i] = tab[i];
 		}
+		if(iSize>i_tabSize)
+		{
+			for (int i = i_tabSize; i<iSize; i++)
+			{
 
+				temp_tab[i] = NULL;
+			}
+		}
 
 		delete[]tab;
 		tab = temp_tab;
@@ -69,7 +81,8 @@ string CTable::sSetTabSize(int iSize)
 		return "done";
 	}
 }
-string CTable::sAssignNumber(int iPlace, int iNr)
+template <typename Data>
+string CTable<Data>::sAssignNumber(int iPlace, Data iNr)
 {
 	if (iPlace >= 0 && iPlace <i_tabSize)
 	{
@@ -79,37 +92,29 @@ string CTable::sAssignNumber(int iPlace, int iNr)
 	else
 		return "error";
 }
-int CTable::iGetNumber(int iPlace)
+template <typename Data>
+Data CTable<Data>::iGetData(int iPlace)
 {
 	if ((iPlace <= 0) || (iPlace > i_tabSize))
-		return  -1;
+		return  NULL;  //can not be
 	else
 		return tab[iPlace];
 }
-int CTable::iGetSize()
+template <typename Data>
+int CTable<Data>::iGetSize()
 {
 	return i_tabSize;
 }
-string CTable::sChangeATabToB(CTable cA, CTable cB)
-{
-	cA.s_name = cB.s_name;
-	cA.i_tabSize = cB.i_tabSize;
-	int *piTemp_tab = new int[cB.i_tabSize];
-	for (int i = 0; i < cB.i_tabSize; i++)
-	{
-		piTemp_tab[i] = cB.tab[i];
-	}
-	delete[] cA.tab;
-	cA.tab = piTemp_tab;
-	return "done";
-}
 
-string CTable::sGetName()
+
+template <typename Data>
+string CTable<Data>::sGetName()
 {
 	return s_name;
 }
 
-string CTable::sInfo()
+template <typename Data>
+string CTable<Data>::sInfo()
 {
 	string s;
 	s = s_name + " len: " + to_string(i_tabSize) + " wartosci: ";
@@ -119,7 +124,8 @@ string CTable::sInfo()
 	}
 	return s;
 }
-CTable CTable::cClone(CTable cA)
+template <typename Data>
+CTable<Data> CTable<Data>::cClone(CTable cA)
 {
 	CTable cB = CTable();
 	cB.s_name = cA.s_name;
@@ -127,3 +133,4 @@ CTable CTable::cClone(CTable cA)
 	return cB;
 
 }
+*/
