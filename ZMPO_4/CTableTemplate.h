@@ -26,7 +26,7 @@ public:
 	void vAssignData(int iPlace, Data &iNr);
 	Data & DataGetData(int iPlace);
 	int iGetSize();
-	//string sInfo();
+	string sInfo();
 	
 };
 
@@ -59,31 +59,22 @@ template <typename Data>
 CTable<Data>::CTable::CTable(CTable &pcOther)
 {
 	cout << "kopiuj: " << s_name << endl;
-	cout << "inside kopiuj 1" << endl;
-	cin.get();
-	cin.get();
 	s_name = pcOther.s_name + "_copy";
 	if (tab != NULL)delete[] tab;
 	tab = new Data*[pcOther.i_tabSize];
-	cout << "inside kopiuj 2 " << endl;
-	cin.get();
-	cin.get();
-	for (int i = 0; i < pcOther.i_tabSize; i++)
+	i_tabSize = pcOther.i_tabSize;
+	for (int i = 0; i < i_tabSize; i++)
 	{
 		if (pcOther.tab[i] != NULL)
 		{
-			cout << "inside kopiuj 3 =!null" << endl;
-			cin.get();
-			cin.get();
 			tab[i] = new Data(*pcOther.tab[i]);
-			cout << "kopiuj 4 nameeeeeeeeee" + (*tab[i]).getName()+" "+to_string(i);
-
 		}
 		else
 		{
 			tab[i] = NULL;
 		}
 	}
+
 
 }
 template <typename Data>
@@ -94,7 +85,7 @@ CTable<Data>::CTable::~CTable()
 		if (tab[i] != NULL)
 			delete tab[i];
 	}
-	delete[] tab;	//usun¹c forem porzadnie
+	delete[] tab;	
 	cout << "usuwam: " << s_name << endl;
 }
 template <typename Data>
@@ -115,14 +106,7 @@ void CTable<Data>::vSetTabSize(int iSize)
 		{
 			if(tab[i]!=NULL)
 			{
-				cout << "inside loop" << endl;
-				cin.get();
-				cin.get();
 				temp_tab[i] = new Data (*tab[i]);
-
-				cout << "inside loop 2" << endl;
-				cin.get();
-				cin.get();
 			}
 			else
 			{
@@ -134,11 +118,14 @@ void CTable<Data>::vSetTabSize(int iSize)
 		{
 			for (int i = i_tabSize; i<iSize; i++)
 			{
-
 				temp_tab[i] = NULL;
 			}
 		}
-
+		for (int i = 0; i<i_tabSize; i++)
+		{
+			if (tab[i] != NULL)
+				delete tab[i];
+		}
 		delete[]tab;
 		tab = temp_tab;
 
@@ -158,22 +145,12 @@ void CTable<Data>::vAssignData(int iPlace, Data& iNr)
 template <typename Data>
 Data &CTable<Data>::DataGetData(int iPlace)
 {
-	cout << "getdata 1" << endl;
-	cin.get();
-	cin.get();
 	if ((iPlace <= 0) || (iPlace > i_tabSize))
 	{
-		cout << "getdata wrong size" << endl;
-		cin.get();
-		cin.get();
 		throw out_of_range("Out of range");
 	}
-	cout << "getdata 2 outside" << endl;
-	cin.get();
-	cin.get();
-	cout << "getdata plzzzzzzz"+ (*tab[iPlace]).getName() << endl;
-	cin.get();
-	cin.get();
+	if(tab[iPlace]== nullptr)
+		throw out_of_range("Data does not exist");
 	return *tab[iPlace];
 	
 		
@@ -190,7 +167,7 @@ string CTable<Data>::sGetName()
 {
 	return s_name;
 }
-/*
+
 template <typename Data>
 string CTable<Data>::sInfo()
 {
@@ -198,10 +175,108 @@ string CTable<Data>::sInfo()
 	s = s_name + " len: " + to_string(i_tabSize) + " wartosci: ";
 	for (int i = 0; i < i_tabSize; i++)
 	{
-		s = s + (*tab[i]) + ", ";
+		s = s + (to_string(*tab[i])) + ", ";
 	}
 	return s;
 }
-*/
 
+
+
+template <typename Data>
+string createDef(CTable<Data> **ctab, int nrTablicy)
+{
+	ctab[nrTablicy] = new CTable<Data>();
+	return "done";
+}
+template <typename Data>
+string create(CTable<Data> **ctab, int nrTablicy, int rozmiar, string nazwaTablicy)
+{
+	ctab[nrTablicy] = new CTable<Data>(rozmiar, nazwaTablicy);
+	return "done";
+
+}
+template <typename Data>
+string createCopy(CTable<Data> **ctab, int nrTablicy, int nrTablicyDoKopiowania)
+{
+	ctab[nrTablicy] = new CTable<Data>(*ctab[nrTablicyDoKopiowania]);
+	return "done";
+}
+template <typename Data>
+string setValue(CTable<Data> **ctab, int nrTablicy, int nrPozycji, Data wartoœæ)
+{
+	try
+	{
+		(*ctab[nrTablicy]).vAssignData(nrPozycji, wartoœæ);
+		return "done";
+	}
+	catch(out_of_range)
+	{
+		return "error";
+	}
+	
+}
+template <typename Data>
+Data getValue(CTable<Data> **ctab, int nrTablicy, int nrPozycji)
+{
+	try
+	{
+		return (*ctab[nrTablicy]).DataGetData(nrPozycji);
+	}
+	catch (out_of_range)
+	{
+		return NULL;
+	}
+	
+}
+template <typename Data>
+string setName(CTable<Data> **ctab, int nrTablicy, string nazwaTablicy)
+{
+	(*ctab[nrTablicy]).vSetName(nazwaTablicy);
+	return "done";
+}
+template <typename Data>
+string getName(CTable<Data> **ctab, int nrTablicy)
+{
+	return (*ctab[nrTablicy]).sGetName();
+}
+template <typename Data>
+int getSize(CTable<Data> **ctab, int nrTablicy)
+{
+	return (*ctab[nrTablicy]).iGetSize();
+}
+template <typename Data>
+string setSize(CTable<Data> **ctab, int nrTablicy, int rozmiarTablicy)
+{
+	try
+	{
+		(*ctab[nrTablicy]).vSetTabSize(rozmiarTablicy);
+		return "done";
+	}
+	catch (out_of_range)
+	{
+		return "error";
+	}
+	
+}
+template <typename Data>
+string info(CTable<Data> **ctab, int nrTablicy)
+{
+	return (*ctab[nrTablicy]).sInfo();
+}
+
+template <typename Data>
+string deleteObject(CTable<Data> **ctab, int nrTablicy)
+{
+	delete ctab[nrTablicy];
+	return "done";
+}
+template <typename Data>
+string clear(CTable<Data> **ctab, int nrTablicy)
+{
+	for (int i = 0; i < (*ctab[nrTablicy]).iGetSize(); i++)
+	{
+		ctab[nrTablicy] = NULL;
+	}
+	return "done";
+}
 
