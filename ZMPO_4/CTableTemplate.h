@@ -25,6 +25,7 @@ public:
 	void vSetTabSize(int iSize);
 	void vAssignData(int iPlace, Data &iNr);
 	Data & DataGetData(int iPlace);
+	void clear();
 	int iGetSize();
 	string sInfo();
 	
@@ -149,9 +150,15 @@ Data &CTable<Data>::DataGetData(int iPlace)
 	{
 		throw out_of_range("Out of range");
 	}
-	if(tab[iPlace]== nullptr)
+	if(tab[iPlace] == NULL)
+	{
+		cout << "im nulllllll" << endl;
 		throw out_of_range("Data does not exist");
-	return *tab[iPlace];
+	}
+	cin.get(); cin.get();
+	
+		return *tab[iPlace];
+	
 	
 		
 }
@@ -180,7 +187,20 @@ string CTable<Data>::sInfo()
 	return s;
 }
 
-
+template <typename Data>
+void CTable<Data>::clear()
+{
+	for (int i = 0; i < i_tabSize; i++)
+	{
+		if (tab[i] != nullptr)
+		{
+			cout << "not nullpointer, can be clear" << endl;
+			tab[i] = NULL;
+		}
+			
+	}
+	
+}
 
 template <typename Data>
 string createDef(CTable<Data> **ctab, int nrTablicy)
@@ -220,10 +240,12 @@ Data getValue(CTable<Data> **ctab, int nrTablicy, int nrPozycji)
 {
 	try
 	{
-		return (*ctab[nrTablicy]).DataGetData(nrPozycji);
+		if(ctab[nrTablicy] !=nullptr)
+			return (*ctab[nrTablicy]).DataGetData(nrPozycji);
 	}
 	catch (out_of_range)
 	{
+		cout << "Obiekt nie zainicjowany" << endl;
 		return NULL;
 	}
 	
@@ -273,9 +295,14 @@ string deleteObject(CTable<Data> **ctab, int nrTablicy)
 template <typename Data>
 string clear(CTable<Data> **ctab, int nrTablicy)
 {
-	for (int i = 0; i < (*ctab[nrTablicy]).iGetSize(); i++)
+	cout << "im in" << endl;
+	cin.get(); cin.get();
+	for (int i = 0; i < (ctab[nrTablicy])->iGetSize(); i++)
 	{
-		ctab[nrTablicy] = NULL;
+		cout << "im in in" <<endl;
+		cin.get(); cin.get();
+		if (ctab[nrTablicy] != NULL)
+			ctab[nrTablicy]->clear();
 	}
 	return "done";
 }

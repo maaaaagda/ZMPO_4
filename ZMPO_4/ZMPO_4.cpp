@@ -10,25 +10,25 @@
 	 
 		string* _name;
 		int _age;
-		bool b_tmp;
+		
 	//Person(){}
 	public:
 	 Person(string name, int age)
 	{
 		_name = new string(name);
 		_age = age;
-		b_tmp = false;
 		cout << "Nameeee of person: " + *_name
 			<< endl;
 	}
+	 ~Person() { delete _name; }
 	 string getName() { return *_name; }
 	 int getAge() { return _age; }
 	 Person & operator = (Person &pcOther)
 	 {
+		 delete _name;
 		 _name = new string (pcOther.getName());
 		 _age = pcOther._age;
-		 if (pcOther.b_tmp == true) delete &pcOther;
-		 cout << "porownania" << endl;
+		cout << "porownania" << endl;
 		 return (*this);
 
 	 }
@@ -36,8 +36,7 @@
 	 {
 		 _name = new string(pcOther.getName());
 		 _age = pcOther._age;
-	 	 b_tmp = pcOther.b_tmp;
-		 cout << "kopiujacy osoba "+ pcOther.getName() << endl;
+	 	 cout << "kopiujacy osoba "+ pcOther.getName() << endl;
 	 }
 	};
 	
@@ -46,6 +45,11 @@
 		int isSize=NULL;// = 3;
 		string sDef;
 		bool end = false;
+		bool *taken = new bool[isSize];
+		for (int i=0; i<isSize; i++)
+		{
+			taken[i] = false;
+		}
 		cout << "Ile obiektow klasy CTable chcesz utworzyc?" << endl;
 		cin >> isSize;
 		
@@ -67,7 +71,20 @@
 		c_TabP[2]->vAssignData(15, p2);
 		cout << (c_TabP[2]->DataGetData(15)).getAge() << endl;;
 		cout << (c_TabP[2]->DataGetData(5)).getAge() << endl;;
-		
+		cout << c_TabP[2]->iGetSize() << endl;
+		cin.get(); 	cin.get();
+		c_TabP[1]->clear();
+		cin.get(); 	cin.get();
+		try
+		{
+			(c_TabP[1]->DataGetData(5));
+		}
+		catch(out_of_range)
+		{
+			cout << "thats the problem, why couldnt just tell me where do you have problem????" << endl;
+		}
+
+		cin.get(); 	cin.get();
 		CTable<int> **c_Tab = new CTable<int>*[isSize];
 		while (end != true)
 		{
@@ -78,12 +95,13 @@
 				int nrTablicy;
 				cout << "NrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize && taken[nrTablicy]!=true)
 				{
 					createDef(c_Tab, nrTablicy);
+					taken[nrTablicy] = true;
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub zajete. Sprobuj ponownie.";
 
 			}
 			else if (sDef == "create")
@@ -92,7 +110,7 @@
 				string nazwaTablicy;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize&& taken[nrTablicy] != true)
 				{
 					cout << "rozmiarTablicy: ";
 					cin >> rozmiar;
@@ -101,14 +119,14 @@
 					create(c_Tab, nrTablicy, rozmiar, nazwaTablicy);
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub jest zajete. Sprobuj ponownie.";
 			}
 			else if (sDef == "createCopy")
 			{
 				int nrTablicy, nrTablicyDoKopiowania;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize&& taken[nrTablicy] != true)
 				{
 					cout << "nrTablicyDoKOpiowania: ";
 					cin >> nrTablicyDoKopiowania;
@@ -121,7 +139,7 @@
 
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub nie jest zajete. Sprobuj ponownie.";
 
 			}
 			else if (sDef == "setValue")
@@ -129,7 +147,7 @@
 				int nrTablicy, nrPozycji, wartosc;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize&& taken[nrTablicy] != false)
 				{
 					cout << "nrPozycji: ";
 					cin >> nrPozycji;
@@ -139,7 +157,7 @@
 
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub jest puste. Sprobuj ponownie.";
 
 			}
 			else if (sDef == "getValue")
@@ -147,14 +165,14 @@
 				int nrTablicy, nrPozycji;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize&& taken[nrTablicy] != false)
 				{
 					cout << "nrPozycji: ";
 					cin >> nrPozycji;
 					cout << "Wartosc danej tablicy: " << getValue(c_Tab, nrTablicy, nrPozycji);
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub nie jest zajete. Sprobuj ponownie.";
 
 			}
 			else if (sDef == "setName")
@@ -163,7 +181,7 @@
 				string nazwaTablicy;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize && taken[nrTablicy] != false)
 				{
 					cout << "nazwaTablicy: ";
 					cin >> nazwaTablicy;
@@ -177,15 +195,15 @@
 				int nrTablicy;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize && taken[nrTablicy] != false)
 				{
 					cout << "Nazwa danej tablicy: " << getName(c_Tab, nrTablicy) << endl;
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicylub jest puste. Sprobuj ponownie.";
 
 			}
-		/*	else if (sDef == "info")
+			else if (sDef == "info")
 			{
 				int nrTablicy;
 				cout << "nrTablicy: ";
@@ -197,31 +215,32 @@
 				else
 					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
 
-			}	*/
+			}	
 			else if (sDef == "deleteObject")
 			{
 				int nrTablicy;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize && taken[nrTablicy] != false)
 				{
 					cout << deleteObject(c_Tab, nrTablicy) << endl;
+					taken[nrTablicy] = false;
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub nie jest zajete . Sprobuj ponownie.";
 			}
 			else if (sDef == "clear")
 			{
 				int nrTablicy;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize && taken[nrTablicy] != false)
 				{
 
 					cout << clear(c_Tab, nrTablicy) << endl;
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub nie jest zajete. Sprobuj ponownie.";
 			}
 			else if (sDef == "setSize")
 			{
@@ -229,18 +248,24 @@
 				int tabSize;
 				cout << "nrTablicy: ";
 				cin >> nrTablicy;
-				if (nrTablicy >= 0 && nrTablicy < isSize)
+				if (nrTablicy >= 0 && nrTablicy < isSize && taken[nrTablicy] != false)
 				{
 					cout << "tabSize: ";
 					cin >> tabSize;
 					cout << setSize(c_Tab, nrTablicy, tabSize) << endl;
 				}
 				else
-					cout << "Nie mam takiego pola tablicy. Sprobuj ponownie.";
+					cout << "Nie mam takiego pola tablicy lub nie jest zajete. Sprobuj ponownie.";
 			}
 			else if (sDef == "end")
 			{
 				end = true;
+				for(int i = 0; i<isSize; i++)
+				{
+					if(taken[i] != false)
+						delete c_Tab[i];
+				}
+				delete c_Tab;
 			}
 			else
 				cout << "Nieznana komenda. Sprobuj ponownie.";
